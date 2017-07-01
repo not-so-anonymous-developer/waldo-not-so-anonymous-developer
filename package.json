@@ -1,0 +1,27 @@
+{
+  "name": "waldo-exif-server",
+  "version": "1.0.0",
+  "description": "API that serves EXIF data from a Waldo Photos S3 bucket; focused on performance.",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/zdware/waldo-zerkz.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/zdware/waldo-zerkz#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "aws-sdk": "^2.79.0",
+    "bluebird": "^3.5.0",
+    "exif-reader": "^1.0.2",
+    "express": "^4.15.3",
+    "jpg-stream": "^1.1.1",
+    "nedb": "^1.8.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  }
+}
