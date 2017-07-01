@@ -1,5 +1,5 @@
 const s3 = require('./s3');
-const { getAndStoreExif } = require('./clients/exif_client');
+const { getExif, parseExif, storeExif } = require('./clients/exif_client');
 const bucketName = 'waldo-recruiting';
 const { parallelLimit } = require('async');
 const Promise = require('bluebird');
@@ -17,7 +17,7 @@ function getAllAndUpsertFromS3() {
     try {
       Promise.map(objects, (obj)  => {
         console.log('mapping promise');
-        return getAndStoreExif(obj);
+        return getAndStoreExif(obj).then()
       }, {concurrency: 3})
       .then(() => console.log('all done'))
       .catch(() => console.log('failure'));
