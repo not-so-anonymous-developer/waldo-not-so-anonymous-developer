@@ -21,6 +21,7 @@
     "express": "^4.15.3",
     "jpg-stream": "^1.1.1",
     "nedb": "^1.8.0",
+    "png-stream": "^1.0.5",
     "request": "^2.81.0",
     "request-promise": "^4.2.1"
   }

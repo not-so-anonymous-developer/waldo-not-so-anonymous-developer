@@ -1,8 +1,9 @@
 const s3 = require('./s3');
-const { getExif, parseExif, storeExif } = require('./clients/exif_client');
+const { getExif, parseExifStream, storeExif } = require('./clients/exif_client');
 const bucketName = 'waldo-recruiting';
 const { parallelLimit } = require('async');
 const Promise = require('bluebird');
+const { exifCollection } = require('./db');
 
 function init() {
   getAllAndUpsertFromS3();
@@ -13,15 +14,24 @@ function getAllAndUpsertFromS3() {
     if (err) {
       console.error(err);
     }
-    const objects = data.Contents.slice(0,10);
+    const objects = data.Contents;
     try {
       Promise.map(objects, (obj)  => {
-        console.log('mapping promise');
-        return getAndStoreExif(obj).then()
-      }, {concurrency: 3})
+        return getExif(obj)
+          .spread(parseExifStream)
+          .spread(storeExif)
+          .catch(console.error);
+      }, {concurrency: 5})
       .then(() => console.log('all done'))
-      .catch(() => console.log('failure'));
+      .then(() => {
+        exifCollection.find({}, (err, docs) =>{
+          if (err) return console.error(err);
+          console.log(docs.length);
+        });
+      })
+      .catch(console.error);
     } catch (ex) {
+      console.error('key: ' + ex.key);
       console.error(ex);
     }
 
