@@ -14,10 +14,10 @@ function getAllAndUpsertFromS3() {
     if (err) {
       console.error(err);
     }
-    const objects = data.Contents.slice(50,60);
+    const objects = data.Contents;
     try {
       Promise.map(objects, (obj)  => {
-        return getExif(obj)
+        return getExif(obj.Key)
           .spread(parseExifStream)
           .spread(storeExif)
           .catch(console.error);

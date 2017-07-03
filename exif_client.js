@@ -6,13 +6,11 @@ const Promise = require('bluebird');
 const sharp = require('sharp');
 const exifReader = require('exif-reader');
 const { RequestError, UnknownError,
-  ParseError, UnsupportedFormatError } = require('./errors');
+  DecodingError, UnsupportedFormatError } = require('./errors');
 
-function getExif(s3Obj) {
-  const key = s3Obj.Key;
+function getExif(key) {
   const identifiers = {
-    key : key,
-    etag : s3Obj.ETag
+    key : key
   }
 
   try {
@@ -33,6 +31,7 @@ function parseExifStream(res, identifiers){
       })
       .on('response', function(res) {
         console.log("processing key:" + key);
+        identifiers.etag = res.headers.ETag;
         const contentType = res.headers['content-type'] || '';
         switch (res.statusCode) {
           case 200: break;
