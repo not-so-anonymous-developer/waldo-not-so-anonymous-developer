@@ -1,6 +1,9 @@
 #exif_s3_indexer
 An HTTP API with flexible EXIF parsing and indexing capabilities.
 
+## AWS Credentials
+Requires you to have a default profile in [AWS Shared Credentials](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html), which have S3 Read Access. 
+
 ## Routes
 
 * `/exif` - Get list of images available for EXIF information (includes href pointing to endpoint for this API.)
