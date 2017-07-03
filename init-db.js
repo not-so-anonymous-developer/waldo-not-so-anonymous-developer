@@ -1,12 +1,12 @@
 const s3 = require('./s3');
-const { getExif, parseExifStream, storeExif } = require('./clients/exif_client');
+const { getExif, parseExifStream, storeExif } = require('./exif_client');
 const bucketName = 'waldo-recruiting';
 const { parallelLimit } = require('async');
 const Promise = require('bluebird');
 const { exifCollection } = require('./db');
 
 function init() {
-  getAllAndUpsertFromS3();
+  return getAllAndUpsertFromS3();
 }
 
 function getAllAndUpsertFromS3() {
@@ -14,31 +14,32 @@ function getAllAndUpsertFromS3() {
     if (err) {
       console.error(err);
     }
-    const objects = data.Contents;
+    const objects = data.Contents.slice(50,60);
     try {
       Promise.map(objects, (obj)  => {
         return getExif(obj)
           .spread(parseExifStream)
           .spread(storeExif)
           .catch(console.error);
-      }, {concurrency: 5})
+      }, {concurrency: 6})
       .then(() => console.log('all done'))
       .then(() => {
-        exifCollection.find({}, (err, docs) =>{
-          if (err) return console.error(err);
-          console.log(docs.length);
+        exifCollection.count({}, (err, count) =>{
+          if (err) throw err;
+          console.log('Total Image EXIFs currently stored:' + count);
         });
       })
-      .catch(console.error);
+      .catch((ex) => {
+        console.error('key: ' + ex.key);
+        console.error(ex.message);
+      });
     } catch (ex) {
       console.error('key: ' + ex.key);
-      console.error(ex);
+      console.error(ex.message);
     }
-
-    //Promise.all(exifPromises)
 
   })
 }
 module.exports = {
-  init : init
-}
+  init
+};

@@ -3,9 +3,11 @@ let exifCollection = new Datastore({ filename:'database', autoload: true, timest
 const bluebird = require('bluebird');
 
 exifCollection = bluebird.promisifyAll(exifCollection);
-exifCollection.find({}, (err, docs) => {
-  console.log(docs.length);
+exifCollection.count({}, (err, count) =>{
+  if (err) return console.error(err);
+  console.log('Total Image EXIFs currently stored: ' + count);
 });
+
 module.exports = {
   db : Datastore,
   exifCollection : exifCollection
