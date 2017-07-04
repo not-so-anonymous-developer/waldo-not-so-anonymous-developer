@@ -1,5 +1,5 @@
 const Datastore = require('nedb')
-let exifCollection = new Datastore({ filename:'database', autoload: true, timestampData : true })
+let exifCollection = new Datastore({ filename:'database.json', autoload: true, timestampData : true })
 const bluebird = require('bluebird');
 
 exifCollection = bluebird.promisifyAll(exifCollection);
